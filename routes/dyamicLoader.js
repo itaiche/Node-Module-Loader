@@ -31,7 +31,6 @@ function getFile(url, error, callback) {
   }
 }
 
-
 function getFilePath(url) {
   return DIRECTORY_PATH + encodeURIComponent(url);
 }
@@ -82,14 +81,14 @@ function saveToFileSystem(url, body) {
   });
 }
 
-function executeListeners(url, error, fileBytes) {
+function executeListeners(url, error, module) {
   if (callbackMap[url]) {
     callbackMap[url].forEach((handler) => {
       try {
-        if (error) {
-          handler.error(fileBytes);
-        } else {
-          handler.callback(fileBytes);
+        if (error && typeof handler.error === 'function') {
+          handler.error(error);
+        } else if (typeof handler.callback === 'function') {
+          handler.callback(module);
         }
       } catch (e) {
         logError('Exception executing callback for ' + url);
