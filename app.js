@@ -11,7 +11,8 @@ function loader(req, res, next) {
     res.status(404);
     res.json({error: "failed to load " + url});
   }, function (response) {
-    res.send(response);
+    const keys = Object.keys(response)
+    res.send(keys);
   });
 }
 

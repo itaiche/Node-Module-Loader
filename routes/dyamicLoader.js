@@ -2,7 +2,8 @@ const fs = require('fs');
 const request = require('request');
 const loadingMap = {};
 let callbackMap = {};
-const DIRECTORY_PATH = process.cwd() + '/tmp/';
+const DIRECTORY_PATH = '/tmp/native-components';
+const DIRECTORY = process.cwd() + DIRECTORY_PATH
 
 function log(logLine) {
   console.log(logLine);
@@ -32,7 +33,7 @@ function getFile(url, error, callback) {
 }
 
 function getFilePath(url) {
-  return DIRECTORY_PATH + encodeURIComponent(url);
+  return DIRECTORY + encodeURIComponent(url);
 }
 
 function registerCallBackAndLoadFile(url, error, callback) {
@@ -59,9 +60,16 @@ function loadFileFromWeb(url) {
 }
 
 function createDirectory() {
+  const subPaths = DIRECTORY_PATH.split('/')
+  let currentPath = process.cwd()
   try {
-    if (!fs.existsSync(DIRECTORY_PATH)) {
-      fs.mkdirSync(DIRECTORY_PATH);
+    for (let i = 0; i < subPaths.length; i++) {
+      if(subPaths[i] !== '') {
+        currentPath += '/' + subPaths[i]
+        if (!fs.existsSync(currentPath)) {
+          fs.mkdirSync(currentPath)
+        }
+      }
     }
   } catch (e) {
     logError('Failed to create directory ' + DIRECTORY_PATH);
